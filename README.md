@@ -22,3 +22,8 @@ http://localhost:3000
 npm run start:dev
 ```
 
+
+### Thank you!
+Please consider leaving a star for our main project repository:
+
+https://github.com/loopstack-ai/loopstack ❤️
