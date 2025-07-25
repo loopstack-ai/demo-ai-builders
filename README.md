@@ -2,7 +2,6 @@
 
 ### Step 1: Configure Your Environment
 ```
-cd my-project
 cp .env.example .env
 
 # Add your OPENAI_KEY to the .env file.
