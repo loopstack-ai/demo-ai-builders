@@ -1,0 +1,1709 @@
+{
+  "$ref": "#/definitions/MainSchema",
+  "definitions": {
+    "MainSchema": {
+      "type": "object",
+      "properties": {
+        "include": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "workspaces": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "name"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "pipelines": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "title": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "namespace": {
+                    "type": "object",
+                    "properties": {
+                      "label": {
+                        "type": "string"
+                      },
+                      "meta": {}
+                    },
+                    "required": [
+                      "label"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "type": {
+                    "type": "string",
+                    "const": "factory"
+                  },
+                  "factory": {
+                    "anyOf": [
+                      {
+                        "type": "object",
+                        "properties": {
+                          "workflow": {
+                            "type": "string"
+                          },
+                          "condition": {
+                            "type": "string",
+                            "pattern": "^(?:\\||>)?(?:[-+])?\\s*\\$\\{([\\s\\S]*?)\\}\\s*$"
+                          }
+                        },
+                        "required": [
+                          "workflow"
+                        ],
+                        "additionalProperties": false
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "pipeline": {
+                            "type": "string"
+                          },
+                          "condition": {
+                            "$ref": "#/definitions/MainSchema/properties/pipelines/items/anyOf/0/properties/factory/anyOf/0/properties/condition"
+                          }
+                        },
+                        "required": [
+                          "pipeline"
+                        ],
+                        "additionalProperties": false
+                      }
+                    ]
+                  },
+                  "parallel": {
+                    "type": "boolean"
+                  },
+                  "iterator": {
+                    "type": "object",
+                    "properties": {
+                      "source": {
+                        "$ref": "#/definitions/MainSchema/properties/pipelines/items/anyOf/0/properties/factory/anyOf/0/properties/condition"
+                      },
+                      "label": {
+                        "$ref": "#/definitions/MainSchema/properties/pipelines/items/anyOf/0/properties/factory/anyOf/0/properties/condition"
+                      },
+                      "meta": {
+                        "$ref": "#/definitions/MainSchema/properties/pipelines/items/anyOf/0/properties/factory/anyOf/0/properties/condition"
+                      }
+                    },
+                    "required": [
+                      "source"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "name",
+                  "namespace",
+                  "type",
+                  "factory",
+                  "iterator"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "$ref": "#/definitions/MainSchema/properties/pipelines/items/anyOf/0/properties/name"
+                  },
+                  "title": {
+                    "$ref": "#/definitions/MainSchema/properties/pipelines/items/anyOf/0/properties/title"
+                  },
+                  "description": {
+                    "$ref": "#/definitions/MainSchema/properties/pipelines/items/anyOf/0/properties/description"
+                  },
+                  "namespace": {
+                    "$ref": "#/definitions/MainSchema/properties/pipelines/items/anyOf/0/properties/namespace"
+                  },
+                  "type": {
+                    "type": "string",
+                    "const": "sequence"
+                  },
+                  "sequence": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/MainSchema/properties/pipelines/items/anyOf/0/properties/factory"
+                    }
+                  }
+                },
+                "required": [
+                  "name",
+                  "type",
+                  "sequence"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "$ref": "#/definitions/MainSchema/properties/pipelines/items/anyOf/0/properties/name"
+                  },
+                  "title": {
+                    "$ref": "#/definitions/MainSchema/properties/pipelines/items/anyOf/0/properties/title"
+                  },
+                  "description": {
+                    "$ref": "#/definitions/MainSchema/properties/pipelines/items/anyOf/0/properties/description"
+                  },
+                  "namespace": {
+                    "$ref": "#/definitions/MainSchema/properties/pipelines/items/anyOf/1/properties/namespace"
+                  },
+                  "type": {
+                    "type": "string",
+                    "const": "root"
+                  },
+                  "sequence": {
+                    "$ref": "#/definitions/MainSchema/properties/pipelines/items/anyOf/1/properties/sequence"
+                  },
+                  "workspace": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name",
+                  "type",
+                  "sequence",
+                  "workspace"
+                ],
+                "additionalProperties": false
+              }
+            ]
+          }
+        },
+        "workflows": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              },
+              "namespace": {
+                "$ref": "#/definitions/MainSchema/properties/pipelines/items/anyOf/0/properties/namespace"
+              },
+              "ui": {
+                "type": "object",
+                "properties": {
+                  "widget": {
+                    "type": "string"
+                  },
+                  "index": {
+                    "type": "number"
+                  },
+                  "label": {
+                    "type": "string"
+                  },
+                  "descriptions": {
+                    "type": "string"
+                  },
+                  "placeholder": {
+                    "type": "string"
+                  },
+                  "rows": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0
+                  },
+                  "inline": {
+                    "type": "boolean"
+                  },
+                  "inputType": {
+                    "type": "string"
+                  },
+                  "emptyValue": {},
+                  "help": {
+                    "type": "string"
+                  },
+                  "title": {
+                    "type": "string"
+                  },
+                  "enumOptions": {
+                    "anyOf": [
+                      {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "label": {
+                              "type": "string"
+                            },
+                            "value": {}
+                          },
+                          "required": [
+                            "label"
+                          ],
+                          "additionalProperties": false
+                        }
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "titleFormat": {
+                    "type": "string"
+                  },
+                  "addable": {
+                    "type": "boolean"
+                  },
+                  "removable": {
+                    "type": "boolean"
+                  },
+                  "movable": {
+                    "type": "boolean"
+                  },
+                  "accept": {
+                    "type": "string"
+                  },
+                  "multiple": {
+                    "type": "boolean"
+                  },
+                  "hidden": {
+                    "type": "boolean"
+                  },
+                  "disabled": {
+                    "type": "boolean"
+                  },
+                  "readonly": {
+                    "type": "boolean"
+                  },
+                  "order": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "buttons": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "transition": {
+                          "type": "string"
+                        },
+                        "position": {
+                          "type": "number"
+                        },
+                        "label": {
+                          "type": "string"
+                        },
+                        "props": {
+                          "type": "object",
+                          "additionalProperties": {}
+                        },
+                        "widget": {
+                          "type": "string"
+                        },
+                        "enabledWhen": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "required": [
+                        "transition"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "items": {
+                    "anyOf": [
+                      {
+                        "$ref": "#/definitions/MainSchema/properties/workflows/items/properties/ui"
+                      },
+                      {
+                        "type": "array",
+                        "items": {
+                          "$ref": "#/definitions/MainSchema/properties/workflows/items/properties/ui"
+                        }
+                      }
+                    ]
+                  },
+                  "properties": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "$ref": "#/definitions/MainSchema/properties/workflows/items/properties/ui"
+                    }
+                  }
+                },
+                "additionalProperties": false
+              },
+              "type": {
+                "type": "string",
+                "const": "stateMachine"
+              },
+              "parameters": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "enum": [
+                          "string",
+                          "number",
+                          "integer",
+                          "boolean",
+                          "array",
+                          "object",
+                          "null",
+                          "any"
+                        ]
+                      },
+                      {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "enum": [
+                            "string",
+                            "number",
+                            "integer",
+                            "boolean",
+                            "array",
+                            "object",
+                            "null"
+                          ]
+                        }
+                      }
+                    ]
+                  },
+                  "$id": {
+                    "type": "string"
+                  },
+                  "$schema": {
+                    "type": "string"
+                  },
+                  "title": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "default": {},
+                  "minLength": {
+                    "type": "integer"
+                  },
+                  "maxLength": {
+                    "type": "integer"
+                  },
+                  "pattern": {
+                    "type": "string"
+                  },
+                  "format": {
+                    "type": "string"
+                  },
+                  "multipleOf": {
+                    "type": "number",
+                    "exclusiveMinimum": 0
+                  },
+                  "minimum": {
+                    "type": "number"
+                  },
+                  "maximum": {
+                    "type": "number"
+                  },
+                  "exclusiveMinimum": {
+                    "type": [
+                      "boolean",
+                      "number"
+                    ]
+                  },
+                  "exclusiveMaximum": {
+                    "type": [
+                      "boolean",
+                      "number"
+                    ]
+                  },
+                  "items": {
+                    "anyOf": [
+                      {
+                        "$ref": "#/definitions/MainSchema/properties/workflows/items/properties/parameters"
+                      },
+                      {
+                        "type": "array",
+                        "items": {
+                          "$ref": "#/definitions/MainSchema/properties/workflows/items/properties/parameters"
+                        }
+                      }
+                    ]
+                  },
+                  "additionalItems": {
+                    "anyOf": [
+                      {
+                        "type": "boolean"
+                      },
+                      {
+                        "$ref": "#/definitions/MainSchema/properties/workflows/items/properties/parameters"
+                      }
+                    ]
+                  },
+                  "minItems": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "maxItems": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "uniqueItems": {
+                    "type": "boolean"
+                  },
+                  "contains": {
+                    "$ref": "#/definitions/MainSchema/properties/workflows/items/properties/parameters"
+                  },
+                  "properties": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "$ref": "#/definitions/MainSchema/properties/workflows/items/properties/parameters"
+                    }
+                  },
+                  "patternProperties": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "$ref": "#/definitions/MainSchema/properties/workflows/items/properties/parameters"
+                    }
+                  },
+                  "additionalProperties": {
+                    "anyOf": [
+                      {
+                        "type": "boolean"
+                      },
+                      {
+                        "$ref": "#/definitions/MainSchema/properties/workflows/items/properties/parameters"
+                      }
+                    ]
+                  },
+                  "required": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "propertyNames": {
+                    "$ref": "#/definitions/MainSchema/properties/workflows/items/properties/parameters"
+                  },
+                  "minProperties": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "maxProperties": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "allOf": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/MainSchema/properties/workflows/items/properties/parameters"
+                    }
+                  },
+                  "anyOf": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/MainSchema/properties/workflows/items/properties/parameters"
+                    }
+                  },
+                  "oneOf": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/MainSchema/properties/workflows/items/properties/parameters"
+                    }
+                  },
+                  "not": {
+                    "$ref": "#/definitions/MainSchema/properties/workflows/items/properties/parameters"
+                  },
+                  "if": {
+                    "$ref": "#/definitions/MainSchema/properties/workflows/items/properties/parameters"
+                  },
+                  "then": {
+                    "$ref": "#/definitions/MainSchema/properties/workflows/items/properties/parameters"
+                  },
+                  "else": {
+                    "$ref": "#/definitions/MainSchema/properties/workflows/items/properties/parameters"
+                  },
+                  "enum": {
+                    "type": "array"
+                  },
+                  "const": {},
+                  "definitions": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "$ref": "#/definitions/MainSchema/properties/workflows/items/properties/parameters"
+                    }
+                  },
+                  "$ref": {
+                    "type": "string"
+                  }
+                },
+                "additionalProperties": false
+              },
+              "extends": {
+                "type": "string"
+              },
+              "arguments": {},
+              "transitions": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "from": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      ]
+                    },
+                    "to": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      ]
+                    },
+                    "when": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "enum": [
+                            "manual",
+                            "onEntry"
+                          ]
+                        },
+                        {
+                          "$ref": "#/definitions/MainSchema/properties/pipelines/items/anyOf/0/properties/factory/anyOf/0/properties/condition"
+                        }
+                      ]
+                    },
+                    "call": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "tool": {
+                            "type": "string"
+                          },
+                          "arguments": {},
+                          "exportVariable": {
+                            "type": "string"
+                          },
+                          "exportContext": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "tool"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "onError": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "name"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": [
+              "name",
+              "type"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "documents": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              },
+              "content": {},
+              "schema": {
+                "$ref": "#/definitions/MainSchema/properties/workflows/items/properties/parameters"
+              },
+              "ui": {
+                "$ref": "#/definitions/MainSchema/properties/workflows/items/properties/ui"
+              },
+              "tags": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/MainSchema/properties/pipelines/items/anyOf/0/properties/factory/anyOf/0/properties/condition"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                ]
+              },
+              "meta": {
+                "type": "object",
+                "properties": {
+                  "mimeType": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "enum": [
+                          "text/plain",
+                          "text/html",
+                          "text/css",
+                          "text/xml",
+                          "text/markdown",
+                          "application/javascript",
+                          "application/typescript",
+                          "application/json",
+                          "application/xml",
+                          "application/yaml"
+                        ]
+                      },
+                      {
+                        "$ref": "#/definitions/MainSchema/properties/pipelines/items/anyOf/0/properties/factory/anyOf/0/properties/condition"
+                      }
+                    ]
+                  },
+                  "invalidate": {
+                    "anyOf": [
+                      {
+                        "type": "boolean"
+                      },
+                      {
+                        "$ref": "#/definitions/MainSchema/properties/pipelines/items/anyOf/0/properties/factory/anyOf/0/properties/condition"
+                      }
+                    ]
+                  },
+                  "level": {
+                    "anyOf": [
+                      {
+                        "$ref": "#/definitions/MainSchema/properties/pipelines/items/anyOf/0/properties/factory/anyOf/0/properties/condition"
+                      },
+                      {
+                        "type": "string",
+                        "const": "debug"
+                      },
+                      {
+                        "type": "string",
+                        "const": "info"
+                      },
+                      {
+                        "type": "string",
+                        "const": "warning"
+                      },
+                      {
+                        "type": "string",
+                        "const": "error"
+                      }
+                    ]
+                  },
+                  "enableAtPlaces": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "hideAtPlaces": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "data": {}
+                },
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "name",
+              "schema"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "snippets": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "name",
+              "value"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "tools": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              },
+              "parameters": {
+                "$ref": "#/definitions/MainSchema/properties/workflows/items/properties/parameters"
+              },
+              "execute": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "service": {
+                        "type": "string",
+                        "const": "CreateDocumentService"
+                      },
+                      "arguments": {
+                        "type": "object",
+                        "properties": {
+                          "document": {
+                            "type": "string"
+                          },
+                          "update": {
+                            "type": "object",
+                            "properties": {
+                              "content": {},
+                              "tags": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                }
+                              },
+                              "meta": {
+                                "type": "object",
+                                "properties": {
+                                  "mimeType": {
+                                    "anyOf": [
+                                      {
+                                        "$ref": "#/definitions/MainSchema/properties/documents/items/properties/meta/properties/mimeType/anyOf/0"
+                                      },
+                                      {
+                                        "$ref": "#/definitions/MainSchema/properties/pipelines/items/anyOf/0/properties/factory/anyOf/0/properties/condition"
+                                      }
+                                    ]
+                                  },
+                                  "invalidate": {
+                                    "anyOf": [
+                                      {
+                                        "type": "boolean"
+                                      },
+                                      {
+                                        "$ref": "#/definitions/MainSchema/properties/pipelines/items/anyOf/0/properties/factory/anyOf/0/properties/condition"
+                                      }
+                                    ]
+                                  },
+                                  "level": {
+                                    "anyOf": [
+                                      {
+                                        "$ref": "#/definitions/MainSchema/properties/pipelines/items/anyOf/0/properties/factory/anyOf/0/properties/condition"
+                                      },
+                                      {
+                                        "type": "string",
+                                        "const": "debug"
+                                      },
+                                      {
+                                        "type": "string",
+                                        "const": "info"
+                                      },
+                                      {
+                                        "type": "string",
+                                        "const": "warning"
+                                      },
+                                      {
+                                        "type": "string",
+                                        "const": "error"
+                                      }
+                                    ]
+                                  },
+                                  "enableAtPlaces": {
+                                    "type": "array",
+                                    "items": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "hideAtPlaces": {
+                                    "type": "array",
+                                    "items": {
+                                      "type": "string"
+                                    }
+                                  }
+                                },
+                                "additionalProperties": false
+                              }
+                            },
+                            "additionalProperties": false
+                          }
+                        },
+                        "required": [
+                          "document"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": [
+                      "service",
+                      "arguments"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "service": {
+                        "type": "string",
+                        "const": "BatchCreateDocumentsService"
+                      },
+                      "arguments": {
+                        "type": "object",
+                        "properties": {
+                          "document": {
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "items": {
+                            "anyOf": [
+                              {
+                                "$ref": "#/definitions/MainSchema/properties/pipelines/items/anyOf/0/properties/factory/anyOf/0/properties/condition"
+                              },
+                              {
+                                "type": "array"
+                              }
+                            ]
+                          }
+                        },
+                        "required": [
+                          "document",
+                          "items"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": [
+                      "service",
+                      "arguments"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "service": {
+                        "type": "string",
+                        "const": "MockService"
+                      },
+                      "arguments": {
+                        "type": "object",
+                        "properties": {
+                          "input": {},
+                          "output": {},
+                          "error": {
+                            "type": "string"
+                          }
+                        },
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": [
+                      "service",
+                      "arguments"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "service": {
+                        "type": "string",
+                        "const": "SetContextService"
+                      },
+                      "arguments": {
+                        "type": "object",
+                        "properties": {
+                          "key": {
+                            "type": "string"
+                          },
+                          "value": {}
+                        },
+                        "required": [
+                          "key"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": [
+                      "service",
+                      "arguments"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "service": {
+                        "type": "string",
+                        "const": "AddNamespaceService"
+                      },
+                      "arguments": {
+                        "type": "object",
+                        "properties": {
+                          "label": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "$ref": "#/definitions/MainSchema/properties/pipelines/items/anyOf/0/properties/factory/anyOf/0/properties/condition"
+                              }
+                            ]
+                          },
+                          "meta": {}
+                        },
+                        "required": [
+                          "label"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": [
+                      "service",
+                      "arguments"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "service": {
+                        "type": "string",
+                        "const": "LoadDocumentService"
+                      },
+                      "arguments": {
+                        "type": "object",
+                        "properties": {
+                          "where": {
+                            "anyOf": [
+                              {
+                                "anyOf": [
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "name": {
+                                        "anyOf": [
+                                          {
+                                            "type": "string"
+                                          },
+                                          {
+                                            "type": "array",
+                                            "items": {
+                                              "type": "string"
+                                            }
+                                          },
+                                          {
+                                            "type": "array",
+                                            "items": {
+                                              "$ref": "#/definitions/MainSchema/properties/pipelines/items/anyOf/0/properties/factory/anyOf/0/properties/condition"
+                                            }
+                                          },
+                                          {
+                                            "$ref": "#/definitions/MainSchema/properties/pipelines/items/anyOf/0/properties/factory/anyOf/0/properties/condition"
+                                          },
+                                          {
+                                            "type": "object",
+                                            "properties": {
+                                              "isNull": {
+                                                "type": "boolean"
+                                              }
+                                            },
+                                            "required": [
+                                              "isNull"
+                                            ],
+                                            "additionalProperties": false
+                                          },
+                                          {
+                                            "type": "object",
+                                            "properties": {
+                                              "eq": {},
+                                              "ne": {},
+                                              "gt": {},
+                                              "gte": {},
+                                              "lt": {},
+                                              "lte": {},
+                                              "like": {
+                                                "type": "string"
+                                              },
+                                              "ilike": {
+                                                "type": "string"
+                                              },
+                                              "between": {
+                                                "type": "array",
+                                                "minItems": 2,
+                                                "maxItems": 2,
+                                                "items": [
+                                                  {},
+                                                  {}
+                                                ]
+                                              }
+                                            },
+                                            "additionalProperties": false
+                                          },
+                                          {
+                                            "type": "object",
+                                            "properties": {
+                                              "in": {
+                                                "type": "array"
+                                              },
+                                              "notIn": {
+                                                "type": "array"
+                                              },
+                                              "any": {
+                                                "type": "array"
+                                              },
+                                              "all": {
+                                                "type": "array"
+                                              }
+                                            },
+                                            "additionalProperties": false
+                                          },
+                                          {
+                                            "type": "object",
+                                            "properties": {
+                                              "contains": {
+                                                "type": "array"
+                                              }
+                                            },
+                                            "additionalProperties": false
+                                          },
+                                          {
+                                            "type": "object",
+                                            "properties": {
+                                              "containsAnyOf": {
+                                                "type": "string"
+                                              }
+                                            },
+                                            "additionalProperties": false
+                                          },
+                                          {
+                                            "type": "object",
+                                            "properties": {
+                                              "exists": {
+                                                "type": "boolean"
+                                              }
+                                            },
+                                            "required": [
+                                              "exists"
+                                            ],
+                                            "additionalProperties": false
+                                          },
+                                          {
+                                            "type": "object",
+                                            "properties": {
+                                              "not": {
+                                                "$ref": "#/definitions/MainSchema/properties/tools/items/properties/execute/anyOf/5/properties/arguments/properties/where/anyOf/0"
+                                              }
+                                            },
+                                            "required": [
+                                              "not"
+                                            ],
+                                            "additionalProperties": false
+                                          },
+                                          {
+                                            "type": "object",
+                                            "properties": {
+                                              "brackets": {
+                                                "$ref": "#/definitions/MainSchema/properties/tools/items/properties/execute/anyOf/5/properties/arguments/properties/where/anyOf/0/anyOf/0/properties/name/anyOf/10/properties/not"
+                                              }
+                                            },
+                                            "required": [
+                                              "brackets"
+                                            ],
+                                            "additionalProperties": false
+                                          },
+                                          {
+                                            "type": "object",
+                                            "properties": {
+                                              "raw": {
+                                                "type": "string"
+                                              }
+                                            },
+                                            "required": [
+                                              "raw"
+                                            ],
+                                            "additionalProperties": false
+                                          }
+                                        ]
+                                      }
+                                    },
+                                    "required": [
+                                      "name"
+                                    ],
+                                    "additionalProperties": false
+                                  },
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "and": {
+                                        "type": "array",
+                                        "items": {
+                                          "$ref": "#/definitions/MainSchema/properties/tools/items/properties/execute/anyOf/5/properties/arguments/properties/where/anyOf/0/anyOf/0/properties/name/anyOf/10/properties/not"
+                                        }
+                                      },
+                                      "or": {
+                                        "type": "array",
+                                        "items": {
+                                          "$ref": "#/definitions/MainSchema/properties/tools/items/properties/execute/anyOf/5/properties/arguments/properties/where/anyOf/0/anyOf/0/properties/name/anyOf/10/properties/not"
+                                        }
+                                      }
+                                    },
+                                    "additionalProperties": false
+                                  },
+                                  {
+                                    "$ref": "#/definitions/MainSchema/properties/tools/items/properties/execute/anyOf/5/properties/arguments/properties/where/anyOf/0/anyOf/0/properties/name/anyOf/11"
+                                  }
+                                ]
+                              },
+                              {
+                                "$ref": "#/definitions/MainSchema/properties/pipelines/items/anyOf/0/properties/factory/anyOf/0/properties/condition"
+                              }
+                            ]
+                          },
+                          "orderBy": {
+                            "anyOf": [
+                              {
+                                "type": "object",
+                                "additionalProperties": {
+                                  "type": "string",
+                                  "enum": [
+                                    "ASC",
+                                    "DESC"
+                                  ]
+                                }
+                              },
+                              {
+                                "$ref": "#/definitions/MainSchema/properties/pipelines/items/anyOf/0/properties/factory/anyOf/0/properties/condition"
+                              }
+                            ]
+                          },
+                          "getMany": {
+                            "anyOf": [
+                              {
+                                "type": "boolean"
+                              },
+                              {
+                                "$ref": "#/definitions/MainSchema/properties/pipelines/items/anyOf/0/properties/factory/anyOf/0/properties/condition"
+                              }
+                            ]
+                          },
+                          "take": {
+                            "anyOf": [
+                              {
+                                "type": "number"
+                              },
+                              {
+                                "$ref": "#/definitions/MainSchema/properties/pipelines/items/anyOf/0/properties/factory/anyOf/0/properties/condition"
+                              }
+                            ]
+                          },
+                          "skip": {
+                            "anyOf": [
+                              {
+                                "type": "number"
+                              },
+                              {
+                                "$ref": "#/definitions/MainSchema/properties/pipelines/items/anyOf/0/properties/factory/anyOf/0/properties/condition"
+                              }
+                            ]
+                          },
+                          "isDependency": {
+                            "anyOf": [
+                              {
+                                "type": "boolean"
+                              },
+                              {
+                                "$ref": "#/definitions/MainSchema/properties/pipelines/items/anyOf/0/properties/factory/anyOf/0/properties/condition"
+                              }
+                            ]
+                          },
+                          "isGlobal": {
+                            "anyOf": [
+                              {
+                                "type": "boolean"
+                              },
+                              {
+                                "$ref": "#/definitions/MainSchema/properties/pipelines/items/anyOf/0/properties/factory/anyOf/0/properties/condition"
+                              }
+                            ]
+                          },
+                          "strictMode": {
+                            "anyOf": [
+                              {
+                                "type": "boolean"
+                              },
+                              {
+                                "$ref": "#/definitions/MainSchema/properties/pipelines/items/anyOf/0/properties/factory/anyOf/0/properties/condition"
+                              }
+                            ]
+                          }
+                        },
+                        "required": [
+                          "where"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": [
+                      "service",
+                      "arguments"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "service": {
+                        "type": "string",
+                        "const": "TransitionSelectorService"
+                      },
+                      "arguments": {
+                        "type": "object",
+                        "properties": {
+                          "transitions": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "place": {
+                                  "type": "string"
+                                },
+                                "condition": {
+                                  "$ref": "#/definitions/MainSchema/properties/pipelines/items/anyOf/0/properties/factory/anyOf/0/properties/condition"
+                                }
+                              },
+                              "required": [
+                                "place"
+                              ],
+                              "additionalProperties": false
+                            }
+                          }
+                        },
+                        "required": [
+                          "transitions"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": [
+                      "service",
+                      "arguments"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "service": {
+                        "type": "string",
+                        "const": "UpdateDocumentService"
+                      },
+                      "arguments": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "$ref": "#/definitions/MainSchema/properties/pipelines/items/anyOf/0/properties/factory/anyOf/0/properties/condition"
+                          },
+                          "update": {
+                            "type": "object",
+                            "properties": {
+                              "content": {},
+                              "tags": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                }
+                              },
+                              "meta": {
+                                "type": "object",
+                                "properties": {
+                                  "mimeType": {
+                                    "$ref": "#/definitions/MainSchema/properties/documents/items/properties/meta/properties/mimeType/anyOf/0"
+                                  },
+                                  "invalidate": {
+                                    "type": "boolean"
+                                  },
+                                  "level": {
+                                    "type": "string",
+                                    "enum": [
+                                      "debug",
+                                      "info",
+                                      "warning",
+                                      "error"
+                                    ]
+                                  },
+                                  "enableAtPlaces": {
+                                    "type": "array",
+                                    "items": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "hideAtPlaces": {
+                                    "type": "array",
+                                    "items": {
+                                      "type": "string"
+                                    }
+                                  }
+                                },
+                                "additionalProperties": false
+                              }
+                            },
+                            "additionalProperties": false
+                          }
+                        },
+                        "required": [
+                          "id"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": [
+                      "service",
+                      "arguments"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "service": {
+                        "type": "string",
+                        "const": "SetTargetPlaceService"
+                      },
+                      "arguments": {
+                        "type": "object",
+                        "properties": {
+                          "target": {
+                            "$ref": "#/definitions/MainSchema/properties/pipelines/items/anyOf/0/properties/factory/anyOf/0/properties/condition"
+                          }
+                        },
+                        "required": [
+                          "target"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": [
+                      "service",
+                      "arguments"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "service": {
+                        "type": "string",
+                        "const": "CreateOutputTemplateService"
+                      },
+                      "arguments": {
+                        "type": "object",
+                        "properties": {
+                          "document": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "document"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": [
+                      "service",
+                      "arguments"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "service": {
+                        "type": "string",
+                        "const": "ParseResponseService"
+                      },
+                      "arguments": {
+                        "type": "object",
+                        "properties": {
+                          "document": {
+                            "type": "string"
+                          },
+                          "response": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "document",
+                          "response"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": [
+                      "service",
+                      "arguments"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "service": {
+                        "type": "string",
+                        "const": "ExtractResponseTagsService"
+                      },
+                      "arguments": {
+                        "type": "object",
+                        "properties": {
+                          "tags": {},
+                          "response": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "response"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": [
+                      "service",
+                      "arguments"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "service": {
+                        "type": "string",
+                        "const": "LlmCompletionService"
+                      },
+                      "arguments": {
+                        "type": "object",
+                        "properties": {
+                          "llm": {
+                            "type": "object",
+                            "properties": {
+                              "model": {
+                                "type": "string"
+                              },
+                              "envApiKey": {
+                                "type": "string"
+                              },
+                              "baseUrl": {
+                                "type": "string"
+                              },
+                              "requestTimeout": {
+                                "type": "number"
+                              },
+                              "temperature": {
+                                "type": "number"
+                              }
+                            },
+                            "required": [
+                              "model"
+                            ],
+                            "additionalProperties": false
+                          },
+                          "messages": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "role": {
+                                  "type": "string"
+                                },
+                                "content": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "role",
+                                "content"
+                              ],
+                              "additionalProperties": false
+                            }
+                          }
+                        },
+                        "required": [
+                          "messages"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": [
+                      "service",
+                      "arguments"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "service": {
+                        "type": "string",
+                        "const": "ExecutePromptMessagesService"
+                      },
+                      "arguments": {
+                        "type": "object",
+                        "properties": {
+                          "llm": {
+                            "type": "object",
+                            "properties": {
+                              "model": {
+                                "type": "string"
+                              },
+                              "envApiKey": {
+                                "type": "string"
+                              },
+                              "baseUrl": {
+                                "type": "string"
+                              },
+                              "requestTimeout": {
+                                "type": "number"
+                              },
+                              "temperature": {
+                                "type": "number"
+                              }
+                            },
+                            "required": [
+                              "model"
+                            ],
+                            "additionalProperties": false
+                          },
+                          "messagesSearchTag": {
+                            "type": "string"
+                          },
+                          "tools": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          }
+                        },
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": [
+                      "service",
+                      "arguments"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "service": {
+                        "type": "string",
+                        "const": "DelegateToolCallsService"
+                      },
+                      "arguments": {
+                        "type": "object",
+                        "properties": {
+                          "toolCalls": {
+                            "$ref": "#/definitions/MainSchema/properties/pipelines/items/anyOf/0/properties/factory/anyOf/0/properties/condition"
+                          }
+                        },
+                        "required": [
+                          "toolCalls"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": [
+                      "service",
+                      "arguments"
+                    ],
+                    "additionalProperties": false
+                  }
+                ]
+              }
+            },
+            "required": [
+              "name",
+              "execute"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

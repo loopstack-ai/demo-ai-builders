@@ -1,0 +1,53 @@
+include:
+  - core/tools/create-chat-message.yaml
+  - web/tools/fetch-html-as-markdown.yaml
+  - tool-call-agent-template.yaml
+
+workspaces:
+  - name: ai_builders
+    title: "AI Builders"
+
+pipelines:
+  - name: ai_builders_agent_simplified
+    title: "Ai Builders Agent"
+    type: root
+    workspace: ai_builders
+    sequence:
+      - workflow: agent_workflow
+
+workflows:
+  - name: agent_workflow
+    title: "AI Builders Agent Workflow"
+    type: stateMachine
+    extends: tool_call_agent_template
+    arguments:
+      agent: my_agent
+    transitions:
+      - name: say_hello
+        from: start
+        to: ready
+        call:
+          - tool: create_chat_message
+            arguments:
+              role: assistant
+              content: "Hello, AI Builders!"
+
+tools:
+  - name: get_ai_builders_info
+    parameters:
+      type: object
+      properties: {}
+    execute:
+      - tool: fetch_html_as_markdown
+        arguments:
+          url: "https://lu.ma/ai-builders"
+
+  - name: my_agent
+    execute:
+      - handler: ChatCompletionsHandler
+        arguments:
+          llm:
+            envApiKey: OPENAI_KEY
+            model: gpt-4o
+          tools:
+            - get_ai_builders_info

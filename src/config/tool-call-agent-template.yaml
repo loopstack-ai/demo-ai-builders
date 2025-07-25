@@ -1,0 +1,66 @@
+include:
+  - core/tools/create-chat-message.yaml
+  - core/tools/delegate-tool-calls.yaml
+  - core/tools/batch-create-messages.yaml
+  - core/tools/switch-target.yaml
+  - core/tools/debug.yaml
+  - fetch-html-as-markdown.yaml
+
+workflows:
+  - name: tool_call_agent_template
+    parameters:
+      type: object
+      properties:
+        agent:
+          type: string
+    type: stateMachine
+    ui:
+      buttons:
+        - widget: chat
+          label: Chat
+          transition: add_chat_message
+          enabledWhen:
+            - ready
+    transitions:
+
+      - name: add_chat_message
+        from: ready
+        to: chat_message_received
+        when: manual
+        call:
+          - tool: create_chat_message
+            arguments:
+              role: user
+              content: ${ transition.payload }
+
+      - name: llm_response
+        from: chat_message_received
+        to: llm_responded
+        call:
+          - tool: ${ arguments.agent }
+            as: RESPONSE
+          - tool: create_chat_message
+            arguments: ${ RESPONSE.response.data }
+
+      - name: check_is_tool_call
+        from: llm_responded
+        to:
+          - is_tool_call
+          - ready
+        call:
+          - tool: switch_target
+            arguments:
+              target: |
+                {{#if RESPONSE.response.data.tool_calls.length}}is_tool_call{{else}}ready{{/if}}
+
+      - name: make_tool_call
+        from: is_tool_call
+        to: chat_message_received
+        call:
+          - tool: delegate_tool_calls
+            arguments:
+              toolCalls: ${ RESPONSE.response.data.tool_calls }
+            as: TOOL_RESPONSES
+          - tool: batch_create_messages
+            arguments:
+              items: ${ TOOL_RESPONSES }
