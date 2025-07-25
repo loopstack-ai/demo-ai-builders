@@ -1,1 +1,1 @@
-# Create Loopstack App
+# A demo agent implementation for AI-Builders Berlin
